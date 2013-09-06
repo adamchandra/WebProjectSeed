@@ -1,0 +1,51 @@
+!!!HTML
+html(ng-app)
+  // [if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" xmlns:ng="http://angularjs.org" xmlns:app="ignored"> <![endif]
+  // [if IE 7]> <html class="no-js lt-ie9 lt-ie8" xmlns:ng="http://angularjs.org" xmlns:app="ignored"> <![endif]
+  // [if IE 8]> <html class="no-js lt-ie9" xmlns:ng="http://angularjs.org" xmlns:app="ignored"> <![endif]
+  // [if gt IE 8]><!--> <html class="no-js" xmlns:ng="http://angularjs.org" xmlns:app="ignored"> <![endif]
+
+  head
+      meta(charset="utf-8")
+      meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+      title
+        block title
+      meta(name="description", content="AngularJS Reference Architecture")
+      meta(name="viewport", content="width=device-width")
+   
+      // [if lte IE 8]> <script src="/scripts/libs/json3.js?v=<%= config.hash('./src/scripts/libs/json3.js') %>"></script> <script src="/scripts/libs/html5shiv-printshiv.js?v=<%= config.hash('./src/scripts/libs/html5shiv-printshiv.js') %>"></script> <![endif]
+      
+
+      if (config.environment === 'prod') 
+        link(rel="stylesheet", href="/styles/styles.min.css")
+      else 
+        script(type='text/javascript', src="/public/jquery-1.10.2.js")
+        script(type='text/javascript', src="/public/bootstrap/js/bootstrap.min.js")
+        link(rel="stylesheet", href="/public/bootstrap/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/styles/styles.css")
+   
+    body(ng-cloak, class="ng-cloak")
+      .container
+        .navbar
+          .navbar-inner
+            a.brand(href='/') {/}
+            ul.nav
+              li
+                a(href='/browse') browse
+              li
+                a(href='/entity') entity
+              li
+                a(href='#') about
+
+            form.form-search.pull-right
+              input.search-query(type='text')
+              button(type='submit') Search
+
+        #main
+          block content
+   
+      if (config.environment === 'prod') 
+        script(src="/scripts/scripts.min.js")
+      else
+        script(data-main="/scripts/main.js", src="/scripts/libs/require.js")
+        script(src="http://localhost:35729/livereload.js")

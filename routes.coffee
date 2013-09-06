@@ -1,40 +1,46 @@
 nextId = 0
 
 people = [
-	{"id": "#{nextId++}", "name": "Saasha", "age": "6"}
-	{"id": "#{nextId++}", "name": "Planet", "age": "8"}
+  {"id": "#{nextId++}", "name": "Saasha", "age": "6"}
+  {"id": "#{nextId++}", "name": "Planet", "age": "8"}
 ]
 
 isUniqueName = (name) ->
-	(name for person in people when person.name is name).length is 0
+  (name for person in people when person.name is name).length is 0
 
 module.exports = (app, options) ->
-	app.get '/', (req, res) ->
-		res.render "#{options.base}/index.html"
+  app.get '/', (req, res) ->
+    res.sendfil "#{options.base}/index.html"
 
-	app.get '/people', (req, res) ->
-		res.json people
+  app.get '/entity', (req, res) ->
+    res.sendfile "#{options.base}/views/entity.html"
 
-	app.post '/people', (req, res) ->
-		name = req.body.name
-		age = req.body.age
+  app.get '/browse', (req, res) ->
+    res.sendfile "#{options.base}/views/browse.html"
 
-		message =
-			"title": "Duplicate!"
-			"message": "#{name} is a duplicate.  Please enter a new name."
+  app.get '/people', (req, res) ->
+    res.json people
 
-		return res.send(message, 403) if not isUniqueName name
+  app.post '/people', (req, res) ->
+    name = req.body.name
+    age = req.body.age
 
-		person =
-			"id": "#{nextId++}"
-			"name": "#{name}"
-			"age": "#{age}"
+    message =
+      "title": "Duplicate!"
+      "message": "#{name} is a duplicate.  Please enter a new name."
 
-		people.push person
-		res.json person
+    return res.send(message, 403) if not isUniqueName name
 
-	app.get '/people/:id', (req, res) ->
-		id = req.params.id
-		current = person for person in people when parseInt(person.id, 10) is parseInt(id, 10)
+    person =
+      "id": "#{nextId++}"
+      "name": "#{name}"
+      "age": "#{age}"
 
-		res.json current
+    people.push person
+    res.json person
+
+  app.get '/people/:id', (req, res) ->
+    id = req.params.id
+    current = person for person in people when parseInt(person.id, 10) is parseInt(id, 10)
+
+    res.json current

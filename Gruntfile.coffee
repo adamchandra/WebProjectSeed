@@ -14,7 +14,7 @@ module.exports = (grunt) ->
           './.temp/'
         ]
 
-    # Compile CoffeeScript (.coffee) files to JavaScript (.js).
+    # Compile CoffeeScript (.jade) files
     jade:
       dev: 
         files: [
@@ -61,19 +61,6 @@ module.exports = (grunt) ->
           # Don't include a surrounding Immediately-Invoked Function Expression (IIFE) in the compiled output.
           # For more information on IIFEs, please visit http://benalman.com/news/2010/11/immediately-invoked-function-expression/
           bare: true
-      # Used for those that desire plain old JavaScript.
-      jslove:
-        files: [
-          cwd: './'
-          src: [
-            '**/*.coffee'
-            '!**/node_modules/**'
-          ]
-          dest: './'
-          expand: true
-          ext: '.js'
-        ]
-        options: '<%= coffee.scripts.options %>'
 
     connect:
       livereload:
@@ -227,6 +214,8 @@ module.exports = (grunt) ->
 
     # Restart server when server sources have changed, notify all browsers on change.
     watch:
+      options:
+        livereload: true
       scripts:
         files: './src/scripts/**'
         tasks: [
@@ -234,28 +223,25 @@ module.exports = (grunt) ->
           'copy:js'
           'copy:scripts'
         ]
-        options:
-          livereload: true
+      public:
+        files: './src/public/**'
+        tasks: [
+          'copy:public'
+        ]
       styles:
         files: './src/styles/**/*.less'
         tasks: [
           'less'
           'copy:styles'
         ]
-        options:
-          livereload: true
       jade:
         files: './src/**/*.jade'
         tasks: [
           'jade:dev'
           'copy:views'
         ]
-        options:
-          livereload: true
       routes:
         files: 'routes.coffee'
-        options:
-          livereload: true
 
     # RequireJS optimizer configuration for both scripts and styles.
     # This configuration is only used in the 'prod' build.
@@ -348,14 +334,6 @@ module.exports = (grunt) ->
     'watch'
   ]
 
-  # Compiles all CoffeeScript files in the project to JavaScript then deletes all CoffeeScript files.
-  # Used for those that desire plain old JavaScript.
-  # Enter the following command at the command line to execute this build task:
-  # grunt jslove
-  grunt.registerTask 'jslove', [
-    'coffee:jslove'
-    'clean:jslove'
-  ]
 
   # Compiles the app with non-optimized build settings and places the build artifacts in the dist directory.
   # Enter the following command at the command line to execute this build task:
@@ -367,6 +345,7 @@ module.exports = (grunt) ->
     'jade:dev'
     'copy:img'
     'copy:js'
+    'copy:public'
     'copy:dev'
   ]
 
@@ -385,6 +364,7 @@ module.exports = (grunt) ->
     'clean:working'
     'coffee:scripts'
     'copy:js'
+    'copy:public'
     'less'
     'imagemin'
     'ngTemplateCache'

@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  .row-fluid
+    .span12
+      star-toggle
+        p There!!
+
+  .row-fluid
+    .well
+      .span6
+        | John Doe
+      .span6
+        | Properties
+  .row-fluid
+    .span12
+      #chart
+
+  .row-fluid
+    .span12
+      tabbable.tabs-left
+        ul.nav.nav-tabs
+          li.active
+            a(href='#tab1', data-toggle='tab') Person 1
+          li 
+            a(href='#tab2', data-toggle='tab') Location 2
+       
+        .tab-content
+          #tab1.tab-pane.active
+            p Props for person 1
+          #tab2.tab-pane
+            p Props for person 2
+
+
+            
