@@ -1,0 +1,7 @@
+mixin topicList(topicList)
+  ul.inline-ul
+    for t in topicList
+      li
+        a(href="/topic/#{t.id}")
+          | #{topics[t.id].name}
+        |, weight=#{t.weight};

@@ -1,0 +1,6 @@
+mixin yearRange(years)
+  span.years
+    if years.length===1
+      |#{years[0]}
+    else if years.length>1
+      |#{years[0]}-#{years[years.length-1]}
