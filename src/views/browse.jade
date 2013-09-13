@@ -1,4 +1,15 @@
 extends layout
 
+include mixins/yearRange
+include mixins/topicList
+
 block content
-  p Browse
+  .row-fluid
+    .span12
+      ul#coentity-list
+        for e in entities
+          li
+            a(href="/entity/#{e.id}")
+              | #{e.name}
+            +yearRange(e.years)
+            +topicList(e.topics)

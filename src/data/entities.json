@@ -1,6 +1,12 @@
 
 entities: [
-  'a',
-  'b'
+  e1:
+    name: 'A. Smith'
+,
+  e2:
+    name: 'B. Smith'
+,
+  e3:
+    name: 'C. Smith'
 ]
   

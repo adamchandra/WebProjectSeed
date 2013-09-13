@@ -1,4 +1,7 @@
 # Build configurations.
+#
+
+
 module.exports = (grunt) ->
   grunt.initConfig
     # Deletes dist and temp directories.
@@ -14,34 +17,34 @@ module.exports = (grunt) ->
           './.temp/'
         ]
 
-    # Compile CoffeeScript (.jade) files
-    jade:
-      dev: 
-        files: [
-          expand: true
-          cwd: './src/'
-          src: '**/*.jade'
-          ext: '.html'
-          dest: './.temp/'
-        ]
-        options: 
-          pretty: true
-          compileDebug: true
-          data:
-            config: 
-              environment: 'dev'
+    ## Compile jade
+    #jade:
+    #  dev: 
+    #    files: [
+    #      expand: true
+    #      cwd: './src/'
+    #      src: '**/*.jade'
+    #      ext: '.html'
+    #      dest: './.temp/'
+    #    ]
+    #    options: 
+    #      pretty: true
+    #      compileDebug: true
+    #      data:
+    #        config: 
+    #          environment: 'dev'
+    # 
+    #  prod: 
+    #    files: '<%= jade.dev.files %>'
+    #    options: 
+    #      pretty: false
+    #      compileDebug: false
+    #      data:
+    #        config: 
+    # environment: 'prod'
 
-      prod: 
-        files: '<%= jade.dev.files %>'
-        options: 
-          pretty: false
-          compileDebug: false
-          data:
-            config: 
-              environment: 'prod'
 
-
-    # Compile CoffeeScript (.coffee) files to JavaScript (.js).
+    # Compile CoffeeScript
     coffee:
       scripts:
         files: [
@@ -58,8 +61,7 @@ module.exports = (grunt) ->
           ext: '.js'
         ]
         options:
-          # Don't include a surrounding Immediately-Invoked Function Expression (IIFE) in the compiled output.
-          # For more information on IIFEs, please visit http://benalman.com/news/2010/11/immediately-invoked-function-expression/
+          # Don't include Immediately-Invoked Function Expression in output. See: http://benalman.com/news/2010/11/immediately-invoked-function-expression/
           bare: true
 
     connect:
@@ -67,17 +69,43 @@ module.exports = (grunt) ->
         options:
           base: './dist/'
           middleware: require './middleware'
-          port: 0
+          port: 8080
 
     # Copies directories and files from one location to another.
     copy:
-      # Copies the contents of the temp directory to the dist directory.
       # In 'dev' individual files are used.
       dev:
         files: [
           cwd: './.temp/'
           src: '**'
           dest: './dist/'
+          expand: true
+        ]
+      # Dist artifacts: only the files necessary to run the application, minified
+      prod:
+        files: [
+          cwd: './.temp/'
+          src: [
+            'img/**/*.png'
+            'scripts/libs/html5shiv-printshiv.js'
+            'scripts/libs/json2.js'
+            'scripts/scripts.min.js'
+            'scripts/scripts.min.js.map'
+            'scripts/scripts.min.js.src'
+            'styles/styles.min.css'
+          ]
+          dest: './dist/'
+          expand: true
+        ,
+          './dist/index.html': './.temp/index.min.html'
+        ]
+
+      # Copies img directory to temp.
+      public:
+        files: [
+          cwd: './src/'
+          src: 'public/**'
+          dest: './.temp/'
           expand: true
         ]
       # Copies img directory to temp.
@@ -101,26 +129,15 @@ module.exports = (grunt) ->
           dest: './dist_test/'
           expand: true
         ]
-      # Copies select files from the temp directory to the dist directory.
-      # In 'prod' minified files are used along with img and libs.
-      # The dist artifacts contain only the files necessary to run the application.
-      prod:
+
+      jade:
         files: [
-          cwd: './.temp/'
-          src: [
-            'img/**/*.png'
-            'scripts/libs/html5shiv-printshiv.js'
-            'scripts/libs/json2.js'
-            'scripts/scripts.min.js'
-            'scripts/scripts.min.js.map'
-            'scripts/scripts.min.js.src'
-            'styles/styles.min.css'
-          ]
+          cwd: './src/'
+          src: '**/*.jade'
           dest: './dist/'
           expand: true
-        ,
-          './dist/index.html': './.temp/index.min.html'
         ]
+
       # Task is run when a watched script is modified.
       scripts:
         files: [
@@ -145,6 +162,7 @@ module.exports = (grunt) ->
           dest: './dist/'
           expand: true
         ]
+
 
     # Compresses png files
     imagemin:
@@ -191,7 +209,6 @@ module.exports = (grunt) ->
     # Gathers all views and creates a file to push views directly into the $templateCache
     # This will produce a file with the following content.
     #
-    # angular.module('app').run(['$templateCache', function ($templateCache) {
     #   $templateCache.put('/views/directives/tab.html', '<div class="tab-pane" ng-class="{active: selected}" ng-transclude></div>');
     #   $templateCache.put('/views/directives/tabs.html', '<div class="tabbable"> <ul class="nav nav-tabs"> <li ng-repeat="tab in tabs" ng-class="{active:tab.selected}"> <a href="http://localhost:3005/scripts/views.js" ng-click="select(tab)">{{tab.caption}}</a> </li> </ul> <div class="tab-content" ng-transclude></div> </div>');
     #   $templateCache.put('/views/people.html', '<ul ng-hide="!people.length"> <li class="row" ng-repeat="person in people | orderBy:\'name\'"> <a ng-href="#/people/{{person.id}}" ng-bind="person.name"></a> </li> </ul>');
@@ -237,11 +254,14 @@ module.exports = (grunt) ->
       jade:
         files: './src/**/*.jade'
         tasks: [
-          'jade:dev'
+          # 'jade:dev'
+          'copy:jade'
           'copy:views'
         ]
       routes:
         files: 'routes.coffee'
+        tasks: [
+        ]
 
     # RequireJS optimizer configuration for both scripts and styles.
     # This configuration is only used in the 'prod' build.
@@ -342,10 +362,11 @@ module.exports = (grunt) ->
     'clean:working'
     'coffee:scripts'
     'less'
-    'jade:dev'
+    # 'jade:dev'
     'copy:img'
     'copy:js'
     'copy:public'
+    'copy:jade'
     'copy:dev'
   ]
 

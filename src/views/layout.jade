@@ -11,7 +11,8 @@ html(ng-app)
       title
         block title
       meta(name="description", content="AngularJS Reference Architecture")
-      meta(name="viewport", content="width=device-width")
+      meta(name="viewport", content="width=device-width, initial-scale=1.0")
+      
    
       // [if lte IE 8]> <script src="/scripts/libs/json3.js?v=<%= config.hash('./src/scripts/libs/json3.js') %>"></script> <script src="/scripts/libs/html5shiv-printshiv.js?v=<%= config.hash('./src/scripts/libs/html5shiv-printshiv.js') %>"></script> <![endif]
       
@@ -21,26 +22,25 @@ html(ng-app)
       else 
         script(type='text/javascript', src="/public/jquery-1.10.2.js")
         script(type='text/javascript', src="/public/bootstrap/js/bootstrap.min.js")
-        link(rel="stylesheet", href="/public/bootstrap/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/public/bootstrap/css/bootstrap.css")
+        link(rel="stylesheet", href="/public/bootstrap/css/bootstrap-responsive.css")
         link(rel="stylesheet", href="/styles/styles.css")
    
     body(ng-cloak, class="ng-cloak")
-      .container
-        .navbar
-          .navbar-inner
+      .navbar.navbar-inverse
+        .navbar-inner
+          .container
             a.brand(href='/') {/}
-            ul.nav
-              li
-                a(href='/browse') browse
-              li
-                a(href='/entity') entity
-              li
-                a(href='#') about
-
-            form.form-search.pull-right
-              input.search-query(type='text')
-              button(type='submit') Search
-
+            .nav-collapse.collapse
+              ul.nav
+                li
+                  a(href='/browse') browse
+                li
+                  a(href='/entity') entity
+                li
+                  a(href='#') about
+   
+      .container-fluid
         #main
           block content
    

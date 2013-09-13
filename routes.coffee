@@ -1,46 +1,39 @@
-nextId = 0
-
-people = [
-  {"id": "#{nextId++}", "name": "Saasha", "age": "6"}
-  {"id": "#{nextId++}", "name": "Planet", "age": "8"}
-]
-
-isUniqueName = (name) ->
-  (name for person in people when person.name is name).length is 0
 
 module.exports = (app, options) ->
-  app.get '/', (req, res) ->
-    res.sendfil "#{options.base}/index.html"
+  conf = {config: {environment: {}}}
+  
+  DeepMerge = require("deep-merge")
 
+  # TODO this merge seems to screw up javascript arrays, turning them into objects
+  merge = DeepMerge((target, source, key) ->
+    [].concat(target, source))
+
+  Client = require('node-rest-client').Client
+  client = new Client()
+
+  app.get '/', (req, res) ->
+    res.render("#{options.base}/views/index", conf)
+    
   app.get '/entity', (req, res) ->
-    res.sendfile "#{options.base}/views/entity.html"
+    # read in file "../yk-pagedata.json"
+    client.get("http://localhost:8080/yk-pagedata.json", (data, response) ->
+      # parsed response body as js object
+      console.log("got data")
+      console.log(data);
+      console.log("end data")
+      c = merge(data, conf)
+      console.log("merged data: ")
+      console.log(c)
+      res.render("#{options.base}/views/entity", c)
+    ).on('error', (err) ->
+      console.log('something went wrong on the request', err.request.options);
+    )
 
   app.get '/browse', (req, res) ->
-    res.sendfile "#{options.base}/views/browse.html"
+    client.get("http://localhost:8080/yk-browsedata.json", (data, response) ->
+      res.render("#{options.base}/views/browse", merge(data, conf))
+    ).on('error', (err) ->
+      console.log('something went wrong on the request', err.request.options);
+    )
 
-  app.get '/people', (req, res) ->
-    res.json people
 
-  app.post '/people', (req, res) ->
-    name = req.body.name
-    age = req.body.age
-
-    message =
-      "title": "Duplicate!"
-      "message": "#{name} is a duplicate.  Please enter a new name."
-
-    return res.send(message, 403) if not isUniqueName name
-
-    person =
-      "id": "#{nextId++}"
-      "name": "#{name}"
-      "age": "#{age}"
-
-    people.push person
-    res.json person
-
-  app.get '/people/:id', (req, res) ->
-    id = req.params.id
-    current = person for person in people when parseInt(person.id, 10) is parseInt(id, 10)
-
-    res.json current

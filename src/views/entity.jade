@@ -1,35 +1,32 @@
 extends layout
 
+include mixins/yearRange
+include mixins/topicList
+
+mixin entityRecord(e)
+  a(href="/entity/#{e.id}")
+    | #{e.name}
+  | &nbsp; #{e.etype} &nbsp;
+  +yearRange(e.years)
+  +topicList(e.topics)
+
 block content
   .row-fluid
-    .span12
-      star-toggle
-        p There!!
-
-  .row-fluid
-    .well
+    .well.group
       .span6
-        | John Doe
+        h5
+          | #{hero.name}
+        span
+          | #{hero.etype}
+          +yearRange(hero.years)
+
       .span6
-        | Properties
-  .row-fluid
-    .span12
-      #chart
+        +topicList(hero.topics)
 
   .row-fluid
     .span12
-      tabbable.tabs-left
-        ul.nav.nav-tabs
-          li.active
-            a(href='#tab1', data-toggle='tab') Person 1
-          li 
-            a(href='#tab2', data-toggle='tab') Location 2
-       
-        .tab-content
-          #tab1.tab-pane.active
-            p Props for person 1
-          #tab2.tab-pane
-            p Props for person 2
+      ul#coentity-list
+        for e in coentities
+          li
+            +entityRecord(e)
 
-
-            
