@@ -1,0 +1,6 @@
+mixin entityRecord(e)
+  a(href="/entity/#{e.id}")
+    | #{e.name}
+  | &nbsp; #{e.etype} &nbsp;
+  +yearRange(e.years)
+  +topicList(e.topics)

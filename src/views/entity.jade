@@ -2,17 +2,12 @@ extends layout
 
 include mixins/yearRange
 include mixins/topicList
-
-mixin entityRecord(e)
-  a(href="/entity/#{e.id}")
-    | #{e.name}
-  | &nbsp; #{e.etype} &nbsp;
-  +yearRange(e.years)
-  +topicList(e.topics)
+include mixins/entityRecord
 
 block content
   .row-fluid
     .well.group
+      -var hero = dict.entities[page.hero]
       .span6
         h5
           | #{hero.name}
@@ -26,7 +21,7 @@ block content
   .row-fluid
     .span12
       ul#coentity-list
-        for e in coentities
+        for eid in page.entities
           li
-            +entityRecord(e)
+            +entityRecord(dict.entities[eid])
 

@@ -1,7 +1,9 @@
-mixin topicList(topicList)
+mixin topicList(topicIds)
   ul.inline-ul
-    for t in topicList
+    for tw in topicIds
+      -var t = dict.topics[tw.id]
+      -var w = tw.weight
       li
         a(href="/topic/#{t.id}")
-          | #{topics[t.id].name}
-        |, weight=#{t.weight};
+          | #{t.name}
+        | (w=#{w})

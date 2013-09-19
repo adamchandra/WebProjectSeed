@@ -2,14 +2,12 @@ extends layout
 
 include mixins/yearRange
 include mixins/topicList
+include mixins/entityRecord
 
 block content
   .row-fluid
     .span12
       ul#coentity-list
-        for e in entities
+        for eid in page.entities
           li
-            a(href="/entity/#{e.id}")
-              | #{e.name}
-            +yearRange(e.years)
-            +topicList(e.topics)
+            +entityRecord(dict.entities[eid])

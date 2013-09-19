@@ -1,0 +1,26 @@
+extends layout
+
+include mixins/entityList
+
+block content
+  .row-fluid
+    .well.group
+      .span6
+        h5
+          | #{dict.topics[page.hero].name}
+        span
+
+  .row-fluid
+    .span12
+      +entityList(page.entities)
+
+      ul#cotopics
+        for cotid in page.cotopics
+          -var t = dict.topics[cotid]
+          li
+            ul.h-indent-ul
+              li
+                | #{t.name}
+              li
+                +entityList(dict.top2ent[cotid])
+

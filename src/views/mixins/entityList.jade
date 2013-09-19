@@ -1,0 +1,9 @@
+include entityRecord
+include topicList
+include yearRange
+
+mixin entityList(idlist)
+  ul.entity-list
+    for eid in idlist
+      li
+        +entityRecord(dict.entities[eid])
